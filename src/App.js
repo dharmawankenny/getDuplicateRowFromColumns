@@ -12,7 +12,9 @@ export default function App() {
       if (evt.target.files && evt.target.files[0]) {
         Papa.parse(evt.target.files[0], {
           complete: (res) => {
-            setData(parse(res.data));
+            const parsed = parse(res.data);
+            alert(parsed);
+            setData(parsed);
             setDisabled(false);
           }
         });
@@ -109,6 +111,7 @@ function parse(rowsRaw) {
   });
 
   alert(uniqueColumns);
+  alert(rows);
 
   rows.push([" "]);
   rows.push([" "]);
@@ -128,6 +131,7 @@ function parse(rowsRaw) {
 }
 
 function download(data) {
+  alert(data);
   const blob = new Blob([Papa.unparse(data)], {
     type: "text/csv;charset=utf-8;"
   });
