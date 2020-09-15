@@ -1,0 +1,82 @@
+@import url("https://rsms.me/inter/inter.css");
+html {
+  font-family: "Inter", sans-serif;
+}
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: "Inter var", sans-serif;
+  }
+}
+
+.App {
+  width: calc(100% - 6rem);
+  height: calc(100vh - 6rem);
+  margin: 0;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: center;
+  background: #0194f3;
+  color: #073e68;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 960px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: flex-start;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #ecf8ff;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 1rem 0 0.5rem;
+  color: #ecf8ff;
+}
+
+h4 {
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: -16px 0 16px;
+  color: #fff;
+}
+
+input {
+  background: #ecf8ff;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  padding: 0.75rem 2rem;
+  border-radius: 0.375rem;
+  background: #ff5e1f;
+  color: #ecf8ff;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+button:disabled {
+  background: #cdd0d1;
+  color: #687176;
+  transition: all 0.25s ease;
+}
