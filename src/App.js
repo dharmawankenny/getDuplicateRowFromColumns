@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import Papa from "papaparse";
-import Fuse from "fuse.js";
 import { saveAs } from "file-saver";
 import "./styles.css";
 
@@ -35,39 +34,31 @@ export default function App() {
 function parse(rowsRaw) {
   const data = rowsRaw.slice(1);
   const columns = rowsRaw[0].map((c, cI) => {
-    return data.filter((d) => d[cI]).map((d) => d[cI]);
+    return data.filter((d) => d[cI]).map((d) => sanitizeString(d[cI]));
   });
   const deletedColumns = [];
   let maxDeletedRows = 0;
-  const colFuz = [];
   const uniqueColumns = columns.map((col) => {
-    const fuzzy = new Fuse([...col], { threshold: 0.15 });
-    const deleted = [];
-    const dupes = {};
-    const result = col.filter((c) => {
-      const fuzzyRes = fuzzy.search(c).map((res) => res.item);
-      if (fuzzyRes.length === 1) {
-        return true;
+    const count = {};
+    col.forEach((c) => {
+      if (count[c]) {
+        count[c] = count[c] + 1;
+      } else {
+        count[c] = 1;
       }
-
-      const isDupe = Object.entries(dupes).find(([dupeLead, dupeLists]) => {
-        if (c === dupeLead) return true;
-        if (dupeLists.includes(c)) return true;
-        return false;
-      });
-
-      if (!isDupe) {
-        dupes[c] = fuzzyRes;
-        return true;
-      }
-
-      deleted.push(c);
-      return false;
     });
-    colFuz.push(new Fuse([...result], { threshold: 0.15 }));
-    deletedColumns.push(deleted);
-    if (deleted.length > maxDeletedRows) maxDeletedRows = deleted.length;
-    return result;
+    const unique = Object.keys(count);
+    const duplicates = [];
+    Object.entries(count)
+      .filter(([_, num]) => num > 1)
+      .forEach(([c, num]) => {
+        for (let i = 1; i < num; i++) {
+          duplicates.push(c);
+        }
+      });
+    deletedColumns.push(duplicates);
+    if (duplicates.length > maxDeletedRows) maxDeletedRows = duplicates.length;
+    return unique;
   });
 
   const rows = [];
@@ -79,40 +70,32 @@ function parse(rowsRaw) {
       if (!colMap[cI][c]) {
         colMap[cI][c] = true;
         const nextCols = [];
-        let maxRows = 0;
 
-        for (let i = cI + 1; i < colFuz.length; i++) {
-          const fuzz = colFuz[i];
-          const fuzzRes = fuzz.search(c).map((res) => res.item);
+        for (let i = cI + 1; i < uniqueColumns.length; i++) {
+          const nextColumn = uniqueColumns[i];
+          const match = nextColumn.find((n) => n === c);
 
-          if (fuzzRes.length > 0) {
-            maxRows = maxRows > fuzzRes.length ? maxRows : fuzzRes.length;
-            nextCols.push(fuzzRes);
-            fuzz.remove((i) => fuzzRes.includes(i));
+          if (match) {
+            nextCols.push(match);
+            uniqueColumns[i] = uniqueColumns[i].filter((n) => n !== c);
           } else {
-            nextCols.push([]);
+            nextCols.push(false);
           }
         }
 
-        for (let i = 0; i < maxRows; i++) {
-          alert(nextCols);
-          rows.push([
-            ...prefix,
-            c,
-            ...nextCols.map((nextCol) => {
-              if (nextCol[i]) return nextCol[i];
+        rows.push([
+          ...prefix,
+          c,
+          ...nextCols.map((nextCol) => {
+            if (nextCol) return nextCol;
 
-              return "";
-            })
-          ]);
-        }
+            return "";
+          })
+        ]);
       }
     });
   });
-
-  alert("rows");
   alert(rows);
-
   rows.push([" "]);
   rows.push([" "]);
   rows.push([" "]);
@@ -128,6 +111,16 @@ function parse(rowsRaw) {
   }
 
   return [rowsRaw[0], ...rows];
+}
+
+function sanitizeString(str) {
+  return str
+    .replace(/\./g, "")
+    .replace(/,/g, "")
+    .split(" ")
+    .filter((w) => w)
+    .join(" ")
+    .toUpperCase();
 }
 
 function download(data) {
