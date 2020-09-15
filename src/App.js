@@ -108,7 +108,7 @@ function parse(rowsRaw) {
     });
   });
 
-  console.log(uniqueColumns);
+  alert(uniqueColumns);
 
   rows.push([" "]);
   rows.push([" "]);
