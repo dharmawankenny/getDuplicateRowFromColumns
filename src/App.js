@@ -20,7 +20,7 @@ export default function App() {
   return (
     <div className="App">
       <input type="file" onChange={onChange} />
-      <button onClick={() => download(data)}>Download File</button>
+      <button onClick={() => download(data)}>Download File!</button>
     </div>
   );
 }
