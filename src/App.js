@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import Papa from "papaparse";
 import Fuse from "fuse.js";
 import { saveAs } from "file-saver";
@@ -6,11 +6,15 @@ import "./styles.css";
 
 export default function App() {
   const [data, setData] = useState();
+  const [disabled, setDisabled] = useState(true);
   const onChange = useCallback(
     (evt) => {
       if (evt.target.files && evt.target.files[0]) {
         Papa.parse(evt.target.files[0], {
-          complete: (res) => setData(parse(res.data))
+          complete: (res) => {
+            setData(parse(res.data));
+            setDisabled(false);
+          }
         });
       }
     },
@@ -20,7 +24,9 @@ export default function App() {
   return (
     <div className="App">
       <input type="file" onChange={onChange} />
-      <button onClick={() => download(data)}>Download File</button>
+      <button disabled={disabled} onClick={() => download(data)}>
+        Download File
+      </button>
     </div>
   );
 }
@@ -34,7 +40,7 @@ function parse(rowsRaw) {
   let maxDeletedRows = 0;
   const colFuz = [];
   const uniqueColumns = columns.map((col) => {
-    const fuzzy = new Fuse([...col], { threshold: 0.1 });
+    const fuzzy = new Fuse([...col], { threshold: 0.15 });
     const deleted = [];
     const dupes = {};
     const result = col.filter((c) => {
@@ -57,7 +63,7 @@ function parse(rowsRaw) {
       deleted.push(c);
       return false;
     });
-    colFuz.push(new Fuse([...result], { threshold: 0.1 }));
+    colFuz.push(new Fuse([...result], { threshold: 0.15 }));
     deletedColumns.push(deleted);
     if (deleted.length > maxDeletedRows) maxDeletedRows = deleted.length;
     return result;
@@ -101,6 +107,8 @@ function parse(rowsRaw) {
       }
     });
   });
+
+  console.log(uniqueColumns);
 
   rows.push([" "]);
   rows.push([" "]);
