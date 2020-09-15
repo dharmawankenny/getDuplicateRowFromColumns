@@ -13,7 +13,6 @@ export default function App() {
         Papa.parse(evt.target.files[0], {
           complete: (res) => {
             const parsed = parse(res.data);
-            alert(parsed);
             setData(parsed);
             setDisabled(false);
           }
@@ -79,11 +78,11 @@ function parse(rowsRaw) {
     column.forEach((c) => {
       if (!colMap[cI][c]) {
         colMap[cI][c] = true;
-        const fuzzies = colFuz.slice(cI + 1);
         const nextCols = [];
         let maxRows = 0;
 
-        fuzzies.forEach((fuzz) => {
+        for (let i = cI + 1; i < colFuz.length; i++) {
+          const fuzz = colFuz[i];
           const fuzzRes = fuzz.search(c).map((res) => res.item);
 
           if (fuzzRes.length > 0) {
@@ -93,9 +92,10 @@ function parse(rowsRaw) {
           } else {
             nextCols.push([]);
           }
-        });
+        }
 
         for (let i = 0; i < maxRows; i++) {
+          alert(nextCols);
           rows.push([
             ...prefix,
             c,
@@ -110,7 +110,7 @@ function parse(rowsRaw) {
     });
   });
 
-  alert(uniqueColumns);
+  alert("rows");
   alert(rows);
 
   rows.push([" "]);
