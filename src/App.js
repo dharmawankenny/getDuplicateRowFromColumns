@@ -23,6 +23,8 @@ export default function App() {
 
   return (
     <div className="App">
+      <h1>Get Duplicated Rows</h1>
+      <p>Upload CSV file to process down below</p>
       <input type="file" onChange={onChange} />
       <button disabled={disabled} onClick={() => download(data)}>
         Download File

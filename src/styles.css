@@ -19,8 +19,8 @@ html {
   align-items: flex-start;
   align-content: flex-start;
   justify-content: center;
-  background: #0194f3;
-  color: #073e68;
+  background: #03121a;
+  color: #03121a;
 }
 
 .wrapper {
@@ -38,8 +38,8 @@ html {
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #ecf8ff;
+  margin: 0 0 0.25rem;
+  color: #ff5e1f;
 }
 
 h2 {
@@ -53,14 +53,19 @@ h4 {
   font-size: 0.875rem;
   font-weight: 400;
   margin: -16px 0 16px;
-  color: #fff;
+  color: #ecf8ff;
+}
+
+p {
+  color: #ecf8ff;
+  margin: 0 0 1rem;
 }
 
 input {
   background: #ecf8ff;
   padding: 0.75rem;
   border-radius: 0.375rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 button {
